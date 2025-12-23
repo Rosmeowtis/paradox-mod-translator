@@ -2,7 +2,7 @@
 //!
 //! 统一换行符、编码和空白字符。
 
-use crate::error::{Result, TranslationError};
+use crate::error::Result;
 
 /// 规范化文本内容
 pub fn normalize_text(content: &str) -> Result<String> {

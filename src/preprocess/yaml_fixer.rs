@@ -2,7 +2,10 @@
 //!
 //! 修复Stellaris本地化文件的YAML格式问题。
 
-use crate::error::{Result, TranslationError};
+use crate::{
+    config,
+    error::{Result, TranslationError},
+};
 use regex::Regex;
 
 /// 修复YAML内容
@@ -46,4 +49,36 @@ pub fn validate_yaml_content(content: &str) -> Result<()> {
     }
 
     Ok(())
+}
+
+/// 移除YAML内容中的语言头(如 l_english:)，并返回原始头和去除头后的内容
+pub fn trim_lang_header(task: &config::TranslationTask, fixed_content: String) -> (String, String) {
+    let mut lines: Vec<String> = fixed_content.lines().map(String::from).collect();
+    let mut original_header = String::new();
+
+    // 查找第一个非注释行
+    let mut header_index = None;
+    for (i, line) in lines.iter().enumerate() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue; // 跳过空行
+        }
+        if trimmed.starts_with('#') {
+            continue; // 跳过注释行
+        }
+        // 检查是否是语言头
+        if trimmed.starts_with(&format!("l_{}:", task.source_lang)) {
+            header_index = Some(i);
+            break;
+        }
+        // 如果不是语言头，则停止查找
+        break;
+    }
+
+    if let Some(index) = header_index {
+        original_header = lines.remove(index);
+    }
+
+    let content_without_header = lines.join("\n");
+    (original_header, content_without_header)
 }

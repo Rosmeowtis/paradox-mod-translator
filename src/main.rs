@@ -5,6 +5,7 @@
 use clap::{Parser, Subcommand};
 use paradox_mod_translator::config::{TranslationTask, load_openai_api_key};
 use paradox_mod_translator::error::{Result, TranslationError};
+use paradox_mod_translator::translate_task;
 use pretty_env_logger;
 use std::path::PathBuf;
 
@@ -61,8 +62,8 @@ async fn main() -> Result<()> {
         Commands::Translate {
             task_file,
             verbose,
-            skip_preprocess,
-            skip_validation,
+            skip_preprocess: _skip_preprocess,
+            skip_validation: _skip_validation,
         } => {
             if verbose {
                 log::info!("Starting translation task from: {:?}", task_file);
@@ -85,14 +86,10 @@ async fn main() -> Result<()> {
             log::debug!("Target languages: {:?}", task.target_langs);
             log::debug!("Glossaries: {:?}", task.glossaries);
 
-            // TODO: 实现完整的翻译流程
-            // 1. 预处理
-            // 2. 加载术语表
-            // 3. 翻译每个目标语言
-            // 4. 后处理
+            // 执行翻译任务
+            translate_task(task, client_settings).await?;
 
-            log::info!("Translation pipeline not yet implemented");
-
+            log::info!("Translation task completed!");
             Ok(())
         }
         Commands::Validate { task_file } => {

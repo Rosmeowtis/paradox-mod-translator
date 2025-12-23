@@ -39,3 +39,9 @@
 2: "£society_research£ $society_research$ 每 100 £job_angler£ $job_angler_plural$"
 3: "[This.GetName] 将会登陆此行星。"
 ```
+
+## 术语表
+
+在本次翻译中，你应该使用以下术语表：
+
+{{glossary_csv}}

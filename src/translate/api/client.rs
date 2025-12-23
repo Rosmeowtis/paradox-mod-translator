@@ -65,7 +65,9 @@ impl ApiClient {
             )));
         }
 
-        let completion: ChatCompletionResponse = response.json().await.map_err(|e| {
+        let completion = response.json().await;
+        // dbg!(&completion);
+        let completion = completion.map_err(|e| {
             TranslationError::Translate(crate::error::TranslateError::InvalidResponse(
                 e.to_string(),
             ))

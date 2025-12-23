@@ -63,8 +63,9 @@ fn default_temperature() -> f32 {
     0.7
 }
 
+// 大模型翻译可能耗时长久，默认超时设置为10分钟
 fn default_timeout() -> u64 {
-    30
+    600
 }
 
 fn default_max_retries() -> u32 {

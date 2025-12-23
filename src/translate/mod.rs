@@ -5,9 +5,11 @@
 mod api;
 mod batcher;
 mod glossary;
+mod translator;
 mod validator;
 
 pub use api::*;
 pub use batcher::*;
 pub use glossary::*;
+pub use translator::*;
 pub use validator::*;

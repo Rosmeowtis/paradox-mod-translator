@@ -13,6 +13,7 @@ pub struct FormatValidator {
     variable_pattern: Regex,
     /// §...§ 格式（颜色代码）
     color_pattern: Regex,
+    // TODO 添加 [...] 格式（指令）
 }
 
 impl Default for FormatValidator {

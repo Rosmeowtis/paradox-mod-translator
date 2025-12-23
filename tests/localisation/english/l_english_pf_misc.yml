@@ -1,0 +1,178 @@
+﻿l_english:
+  # Misc
+  mod_planet_farmers_rare_crystals_produces_add: "£rare_crystals£ $rare_crystals$ per 100 £job_farmer£ $job_farmer_plural$"
+  mod_planet_farmers_engineering_research_produces_add: "£engineering_research£ $engineering_research$ per 100 £job_farmer£ $job_farmer_plural$"
+  mod_planet_farmers_sr_zro_produces_add: "£zro£ $sr_zro$ per 100 £job_farmer£ $job_farmer_plural$"
+  mod_planet_researchers_food_produces_add: "£food£ $food$ per 100 £job_researcher£ $job_researcher_plural$"
+  mod_planet_anglers_food_produces_add: "£food£ $food$ per 100 £job_angler£ $job_angler_plural$"
+  mod_planet_anglers_society_research_produces_add: "£society_research£ $society_research$ per 100 £job_angler£ $job_angler_plural$"
+  mod_planet_anglers_engineering_research_produces_add: "£engineering_research£ $engineering_research$ per 100 £job_angler£ $job_angler_plural$"
+  mod_planet_miners_consumer_goods_produces_add: "£consumer_goods£ $consumer_goods$ per 100 £job_miner£ $job_miner$"
+
+  pf_pm_protoplanetary_system: "Protoplanetary Debris"
+
+  # Tooltips
+  unlocks_zone_pf_psionic_fungi_all_tt: "$unlocks_zone_pf_psionic_fungi_materialist_tt$\n$unlocks_zone_pf_psionic_fungi_spiritualist_tt$"
+  unlocks_zone_pf_psionic_fungi_spiritualist_tt: "Unlocks Agriculture District Specialization: §Y£zone£ $zone_pf_psionic_fungi_spiritualist$§!"
+  unlocks_zone_pf_psionic_fungi_materialist_tt: "Unlocks Agriculture District Specialization: §Y£zone£ $zone_pf_psionic_fungi_materialist$§!"
+  unlocks_zone_zone_pf_plantations_tt: "Unlocks Agriculture District Specialization: §Y£zone£ $zone_pf_plantations$§!"
+
+  # Zones
+  zone_pf_psionic_fungi_spiritualist: "Fungal Sanctuary"
+  zone_pf_psionic_fungi_spiritualist_desc: "Carefully curated groves and delicate architecture create an atmosphere of peace that resonates with the minds of all individuals."
+  zone_pf_psionic_fungi_materialist: "Fungal Research Operations"
+  zone_pf_psionic_fungi_materialist_desc: "Focuses analysis and tissue sample cultivation enables deep insights into the nature of evolution and consciousness."
+  zone_pf_plantations: "Luxury Cultivation"
+  zone_pf_plantations_desc: "Cultivation of this world's valuable native life for export and profit."
+
+  # Districts
+  district_pf_fungal_groves_plural: "Fungal Groves"
+  district_pf_fungal_groves: "Fungal Grove"
+  district_pf_fungal_groves_desc: "Fields of carefully engineered orchards provide optimal growth and nourishment and ensure a steady supply of samples for study."
+  district_pf_fungal_groves_0: "Whispering Fields"
+  
+  district_pf_fungal_sanctuaries_plural: "Fungal Sanctuaries"
+  district_pf_fungal_sanctuaries: "Fungal Sanctuary"
+  district_pf_fungal_sanctuaries_desc: "A complex of gardens, temples and retreats built around a rare grove of psionic-boosting fungal lifeforms."
+  district_pf_fungal_sanctuaries_0: "Temple Complexes"
+
+  district_pf_plantations_plural: "Plantation Districts"
+  district_pf_plantations: "Plantation District"
+  district_pf_plantations_desc: "$district_pf_plantations_default_desc$"
+
+  district_pf_plantations_rare_wood: "Cultivated Xenoforests"
+  district_pf_plantations_rare_wood_desc: "Artificial woodlands, ready for the harvest."
+  district_pf_plantations_iridescent_pearls: "Tidal Hydroculture"
+  district_pf_plantations_iridescent_pearls_desc: "Large swathes of coastline given over the farming of giant xenoclams."
+  district_pf_plantations_sea_ferns: "Harmonious Seabeds"
+  district_pf_plantations_sea_ferns_desc: "Enormous underwater forests wave softly in the current."
+  district_pf_plantations_desert_silks: "Deep Desert Stations"
+  district_pf_plantations_desert_silks_desc: "Isolated homesteads cultivate vast swathes of desert."
+  district_pf_plantations_rare_spices: "Dryland Harvests"
+  district_pf_plantations_rare_spices_desc: "Thin desert soil is put to the plough."
+  district_pf_plantations_amberfruit: "Amberfruit Orchards"
+  district_pf_plantations_amberfruit_desc: "Heavy boughs provide welcome shade."
+  district_pf_plantations_mountain_flowers: "Alpine Biogardens"
+  district_pf_plantations_mountain_flowers_desc: "Glass and polymer protect their delicate occupants from the cold winds outside."
+  district_pf_plantations_fungal_caves: "Subterranean Cultivations"
+  district_pf_plantations_fungal_caves_desc: "Artificial cave systems, carefully tuned to replicate the natural habitat of their fungal inhabitants."
+  district_pf_plantations_marsh_roots: "Wetland Hydroponics"
+  district_pf_plantations_marsh_roots_desc: "Muddy channels and nutrient rich boglands feed organized rows of cultivated wetland shrubs."
+  district_pf_plantations_default: "Luxury Cultivations"
+  district_pf_plantations_default_desc: "Lines upon lines of cultivated cash crops."
+
+  # Planet Stuff
+  NAME_pf_Zolqhast: "Zolqhast"
+  NAME_pf_hive_star_nebula: "Kypellic Cloud"
+  NAME_pf_straggler_swarms: "Straggler Swarms"
+  NAME_pf_straggler_swarms_fleet_large: "Forgotten Cluster"
+  NAME_pf_straggler_swarms_fleet_medium: "Feral Swarm"
+  NAME_pf_straggler_swarms_fleet_small: "Stray Brood"
+
+  # Nebula Names
+  pf_stellar_nursery_nebula_name_1: "Dubboid Rift"
+  pf_stellar_nursery_nebula_name_2: "Nicera Cloud Complex"
+  pf_stellar_nursery_nebula_name_3: "Dark Trunk Nebula"
+  pf_stellar_nursery_nebula_name_4: "Karin Molecular Cloud"
+  pf_stellar_nursery_nebula_name_5: "Basvara Stellar Nursery"
+  pf_stellar_nursery_nebula_name_6: "Hassaleh Stellar Nursery"
+  pf_stellar_nursery_nebula_name_7: "Olluna Stellar Nursery"
+
+  # Decisions
+  decision_pf_remove_prethoryn_biomass: "Remove Alien Biomass"
+  decision_pf_remove_prethoryn_biomass_desc: "[This.GetName] is choked by an omnipresent infestation of alien biomass. We must burn it, clear it and sterilize it to allow the colony to function."
+
+  decision_pf_clear_impenetrable_jungles: "Clear Impenetrable Jungles"
+  decision_pf_clear_impenetrable_jungles_desc: "A campaign of defoliation and cutbacks to render the land usable and open to development."
+
+  decision_pf_climate_enhancements: "Develop Climate Enhancements"
+  decision_pf_climate_enhancements_desc: "With the careful application of gene-engineering, orbital climate control satellites and terrain resculpting, we can turn barren and undesirable regions of this [pf_planet_type] into fertile habitats for new life."
+
+  decision_pf_terraform_energy: "Terraforming: Geothermal Exploitation"
+  decision_pf_terraform_energy_desc: "Advances in seismic dampening and thermal exchange systems unlock previously unexploitable regions for development. We can now harness the energy once locked below the crust with unparalleled efficiency."
+
+  decision_pf_terraform_minerals: "Terraforming: Mineral Extraction"
+  decision_pf_terraform_minerals_desc: "Crude mining techniques involve deep shafts into the ground, or scratch gaping pits into the surface. With our more sophisticated technology, we can simply remove the geographic features that obstruct our operations and feast on the bounty beneath."
+
+  decision_pf_terraform_food: "Terraforming: Agricultural Enhancements"
+  decision_pf_terraform_food_desc: "By rebuilding the hydrosphere and biosphere from the ground up, a region of barren, unproductive land can be transformed into lush and fertile farmland."
+
+  decision_pf_geothermic_extraction: "Construct Geothermic Extraction Sites"
+  decision_pf_geothermic_extraction_desc: "With some targeted investments and tactical terraforming efforts, we could harness the substantial tectonic forces of this world and unlock the potential energy beneath the surface"
+
+  decision_pf_sandstorm_mitigation: "Conduct Sandstorm Mitigation"
+  decision_pf_sandstorm_mitigation_desc: "The major dust storms that wrack this world are the result of many interesting environmental factors. By carefully tweaking a few aspects of the climate and geology around the worst hotspots, we can prevent storms of a serious magnitude from forming at all."
+  pf_sandstorm_mitigation_tt: "§YPrevents any further Static Storms.§!"
+
+  decision_pf_restore_desert_relic_world: "Salvage Desert Ruins"
+  decision_pf_restore_desert_relic_world_desc: "The sands of this world cover the ruins of long dead cityscapes. Some of these ruins are well enough-preserved that we could begin to use them as a foundation for our own needs."
+
+  # Special Projects
+  pf_presapients_research_facility: "Investigate the Mysterious Facility"
+  pf_presapients_research_facility_DESC: "Colonists have found a mysterious alien facility in the highlands of [This.GetName]. Its purpose and origin are unclear."
+  pf_hyper_blizzards_prevention: "Atmospheric Aerosol Seeding"
+  pf_hyper_blizzards_prevention_DESC: "By seeding the skies of [This.GetName] with sunlight-absorbing nano-particulates, we can disrupt the unique conditions that allow the formation of devastating high energy storms."
+  pf_ancient_neutron_sweep_investigation: "Fossilized Devastation"
+  pf_ancient_neutron_sweep_investigation_DESC: "[This.GetName] bears the evidence of an ancient cataclysm that devastated life - but no signs of the cause itself. Our scientists are eager to learn more."
+  pf_fix_frozen_terraforming_equipment: "Iced Out"
+  pf_fix_frozen_terraforming_equipment_DESC: "[This.GetName] appears to have been subject to a prolonged period of terraforming by an unknown alien species. In their absence it seems to have been neglected and left to cause runaway glaciation across the planet."
+
+  # Technology
+  tech_pf_micro_terraforming: "Micro-Terraforming Techniques"
+  tech_pf_micro_terraforming_desc: "Small, localized terraforming projects enable engineers to make specific alterations to the environment, allowing us to create specialised ecosystems on our worlds"
+  pf_terraforming_decisions: "§HUnlock Feature:§! Specialized Terraforming Decisions"
+  pf_terraforming_decisions_desc: "§H$tech_pf_micro_terraforming$§!\nUnlocks decisions to specialize a planet's environment."
+
+  # Ambient Objects
+  pf_derelict_particle_accelerator: "$derelict_particle_accelerator$"
+  pf_derelict_particle_accelerator_desc: "$derelict_particle_accelerator_desc$"
+  pf_ancient_terraforming_station: "Ancient Terraforming Station"
+  pf_ancient_terraforming_station_desc: "A long abandoned outpost drifts lazily in orbit of this world. Its mission of climate modification continues unchecked."
+  pf_derelict_ship_object: "Derelict Ship"
+  pf_derelict_ship_object_desc: "The broken remains of an ancient warship. Time and scavengers have stripped the hulk bare."
+
+  # Anomalies
+  pf_abandoned_telescope_station: "Abandoned Station"
+  pf_abandoned_telescope_station_desc: "A derelict station drifts aimlessly in a silent orbit around this world. An enormous impact has gouged away part of the structure."
+  pf_churning_beneath_the_ice: "Under the Ice"
+  pf_churning_beneath_the_ice_desc: "Seismic scans of this icy world indicate river valleys and seabeds buried under the ice. It was host to an active hydrosphere - possibly even life."
+  pf_strange_heat_emissions: "Strange Heat Emissions"
+  pf_strange_heat_emissions_desc: "Something appears to be expelling large quantities of heat from the otherwise frozen mountaintops of [This.GetName]."
+  pf_ancient_gas_mines: "Derelict Cloud Stations"
+  pf_ancient_gas_mines_desc: "Strange structures are suspended in the atmosphere of this world."
+  pf_desert_relic_ruins: "Among the Dunes"
+  pf_desert_relic_ruins_desc: "The sandy dunes of [This.GetName] are dotted with the buried ruins of an immense, world-spanning city."
+  pf_discovered_seed_world: "Strange Ecosystems"
+  pf_discovered_seed_world_desc: "The native fauna of this world is unusually homogenous. A wide variety of ecological niches are filled by very similar, clearly related species."
+
+  # Scripted Loc
+  pf_planet_name: "planet"
+  pf_moon_name: "moon"
+  pf_station_name: "station"
+  pf_ring_name: "ring"
+  pf_asteroid_name: "asteroid"
+  pf_star_name: "star"
+  pf_gas_giant_name: "gas giant"
+
+  pf_relic_surface: "ruins"
+  pf_ocean_surface: "waves"
+  pf_continental_surface: "coasts"
+  pf_tropical_surface: "jungles"
+  pf_arid_surface: "drylands"
+  pf_desert_surface: "dunes"
+  pf_savannah_surface: "prairies"
+  pf_arctic_surface: "snowdrifts"
+  pf_alpine_surface: "mountains"
+  pf_tundra_surface: "bogs"
+  pf_generic_surface: "surface"
+
+  pf_rare_wood_resource: "Exotic Hardwoods"
+  pf_iridescent_pearls_resource: "Iridescent Pearls"
+  pf_sea_ferns_resource: "Mellifluous Sea Ferns"
+  pf_rare_spices_resource: "Sundust Spices"
+  pf_desert_silks_resource: "Desert Silks"
+  pf_amberfruit_resource: "Amberfruit"
+  pf_mountain_flowers_resource: "Ice Flowers"
+  pf_fungal_caves_resource: "Trancebloom Fungi"
+  pf_marsh_roots_resource: "Fragrant Marsh Roots"
+  pf_generic_luxury_resource: "Valuable Resources" # This should never appear.

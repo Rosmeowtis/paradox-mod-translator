@@ -1,5 +1,22 @@
 # 任务模板示例，具体内容根据情况编写。
 
+# 大模型客户端设置（可选，使用默认值）
+[client_settings]
+# API基础URL（OpenAI兼容格式，默认：https://api.deepseek.com）
+api_base = "https://api.deepseek.com"
+# 模型名称（默认：deepseek-reasoner）
+model = "deepseek-reasoner"
+# 温度参数（0.0-2.0，默认：0.7）
+temperature = 0.7
+# 请求超时时间（秒，默认：30）
+timeout_secs = 30
+# 最大重试次数（默认：3）
+max_retries = 3
+# 最大输出token数（默认：2000）
+max_tokens = 2000
+# 每次请求的最大文本长度（字符数，用于切片，默认：4000）
+max_chunk_size = 4000
+
 [[task]]
 source_lang = "english"
 # 可用的语言代码列表见 https://stellaris.paradoxwikis.com/Localisation_modding
@@ -14,4 +31,4 @@ glossaries = [
 # 源语言文件所在目录，会自动读取 {localisation_dir}/{source_lang} 下的所有 yml 文件，并将其写入
 # localisation_dir/{source_lang}/replace 中的同名 yml 文件中（将文件名中的 l_{source_lang} 替换为 l_{target_lang}）
 # 需要为绝对路径或相对于 task.toml 的相对路径
-localisation_dir = "./localisation"
+localisation_dir = "./tests/localisation"

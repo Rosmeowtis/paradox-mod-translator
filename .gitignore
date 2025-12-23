@@ -1,4 +1,7 @@
 /target
-
+/.env
 /data/glossary_custom/*
 !.gitkeep
+
+# 测试输出
+/tests/localisation/simp_chinese

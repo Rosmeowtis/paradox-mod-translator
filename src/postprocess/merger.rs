@@ -14,7 +14,7 @@ pub struct TranslationSlice {
     pub end_line: usize,
 }
 
-/// 合并翻译切片
+/// 合并翻译切片并恢复缩进
 pub fn merge_slices(slices: Vec<TranslationSlice>) -> Result<String> {
     if slices.is_empty() {
         return Err(TranslationError::Postprocess(
@@ -39,29 +39,23 @@ pub fn merge_slices(slices: Vec<TranslationSlice>) -> Result<String> {
         }
     }
 
-    // 合并内容
+    // 合并内容并增加两级缩进
     let mut lines = Vec::new();
     for slice in sorted_slices {
-        lines.extend(slice.content.lines().map(|s| s.to_string()));
+        lines.extend(slice.content.lines().map(|s| format!("  {}", s)));
     }
 
     Ok(lines.join("\n"))
 }
 
 /// 从YAML内容重建完整文件
-pub fn reconstruct_yaml_file(
-    slices: Vec<TranslationSlice>,
-    original_header: &str,
-) -> Result<String> {
+pub fn reconstruct_yaml_file(slices: Vec<TranslationSlice>, target_lang: &str) -> Result<String> {
     let merged = merge_slices(slices)?;
 
-    // 确保有文件头
+    let target_lang_header = format!("l_{}:\n", target_lang);
     let mut result = String::new();
-    if !merged.contains("l_") && !original_header.is_empty() {
-        result.push_str(original_header);
-        result.push('\n');
-    }
-
+    // 确保有文件头
+    result.push_str(&target_lang_header);
     result.push_str(&merged);
     Ok(result)
 }

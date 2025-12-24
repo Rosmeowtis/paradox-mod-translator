@@ -96,6 +96,10 @@ impl Translator {
         // 替换模板中的占位符
         if !glossary_csv.is_empty() {
             prompt = prompt.replace("{{glossary_csv}}", &glossary_csv);
+            log::debug!(
+                "\n======DEBUG Using glossary CSV======\n{}\n======DEBUG END======\n",
+                &glossary_csv
+            );
         } else {
             prompt = prompt.replace("{{glossary_csv}}", "（无相关术语）");
         }

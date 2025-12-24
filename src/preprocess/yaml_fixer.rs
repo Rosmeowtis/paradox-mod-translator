@@ -10,29 +10,23 @@ use regex::Regex;
 
 /// 修复YAML内容
 pub fn fix_yaml_content(content: &str) -> Result<String> {
-    let mut fixed = content.to_string();
-
-    // 1. 修复 `key:0 "value"` 格式
+    let fixed = content.to_string();
     let re_key_zero = Regex::new(r#"(\w+):0\s+"([^"]+)"#).unwrap();
-    fixed = re_key_zero.replace_all(&fixed, r#"$1: "$2""#).to_string();
-
-    // 2. 确保所有值都有引号
     let re_unquoted_value = Regex::new(r#"(\w+):\s+([^"\s][^"\n]*)(?:\n|$)"#).unwrap();
-    fixed = re_unquoted_value
-        .replace_all(&fixed, r#"$1: "$2""#)
-        .to_string();
 
-    // 3. 标准化缩进（2空格）
-    let lines: Vec<String> = fixed
-        .lines()
-        .map(|line| {
-            let trimmed = line.trim_start();
-            let indent_level = line.len() - trimmed.len();
-            let spaces = indent_level / 2 * 2; // 确保是2的倍数
-            format!("{}{}", " ".repeat(spaces), trimmed)
-        })
-        .collect();
-
+    let lines = fixed.lines().into_iter().map(|line| {
+        // 1. 修复 `key:0 "value"` 格式
+        let fixed = re_key_zero.replace_all(line, r#"$1: "$2""#);
+        // 2. 确保所有值都有引号
+        let fixed = re_unquoted_value.replace_all(&fixed, r#"$1: "$2""#);
+        // 3. 标准化缩进（2空格）
+        let trimmed = fixed.trim_start();
+        let indent_level = fixed.len() - trimmed.len();
+        let spaces = indent_level / 2 * 2; // 确保是2的倍数
+        let fixed = format!("{}{}", " ".repeat(spaces), trimmed);
+        fixed
+    });
+    let lines: Vec<String> = lines.collect();
     Ok(lines.join("\n"))
 }
 

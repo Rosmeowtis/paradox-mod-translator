@@ -13,28 +13,25 @@ use std::fs;
 /// 翻译器
 pub struct Translator {
     api_client: ApiClient,
-    glossaries: Vec<Glossary>,
+    glossary: Glossary,
     validator: FormatValidator,
 }
 
 impl Translator {
     /// 创建新的翻译器
-    pub fn new(api_client: ApiClient, glossaries: Vec<Glossary>) -> Self {
+    pub fn new(api_client: ApiClient, glossaries: Glossary) -> Self {
         Self {
             api_client,
-            glossaries,
+            glossary: glossaries,
             validator: FormatValidator::new(),
         }
     }
 
     /// 从设置创建翻译器
-    pub fn from_settings(
-        client_settings: ClientSettings,
-        glossaries: Vec<Glossary>,
-    ) -> Result<Self> {
+    pub fn from_settings(client_settings: ClientSettings, glossary: Glossary) -> Result<Self> {
         let api_key = crate::config::load_openai_api_key()?;
         let api_client = ApiClient::new(client_settings, api_key)?;
-        Ok(Self::new(api_client, glossaries))
+        Ok(Self::new(api_client, glossary))
     }
 
     /// 加载系统提示词模板
@@ -54,10 +51,8 @@ impl Translator {
 
         // 提取源文本中的术语
         let mut all_found_terms = Vec::new();
-        for glossary in &self.glossaries {
-            let found_terms = glossary.find_terms_in_text(source_text, source_lang);
-            all_found_terms.extend(found_terms);
-        }
+        let found_terms = self.glossary.find_terms_in_text(source_text, source_lang);
+        all_found_terms.extend(found_terms);
 
         // 去重
         all_found_terms.sort();
@@ -73,22 +68,24 @@ impl Translator {
             csv_data.push_str(&format!("{},{}", source_lang, target_lang));
 
             let source_terms: Vec<&str> = all_found_terms.iter().map(|s| s.as_str()).collect();
-            for glossary in &self.glossaries {
-                let csv = glossary.to_csv(source_lang, target_lang, &source_terms);
-                if !csv.is_empty() && csv.contains('\n') {
-                    // 跳过表头行（第一行）
-                    let lines: Vec<&str> = csv.lines().collect();
-                    if lines.len() > 1 {
-                        for line in &lines[1..] {
-                            if !line.trim().is_empty() {
-                                csv_data.push('\n');
-                                csv_data.push_str(line);
-                                terms_count += 1;
-                            }
+
+            let csv = self
+                .glossary
+                .to_csv(source_lang, target_lang, &source_terms);
+            if !csv.is_empty() && csv.contains('\n') {
+                // 跳过表头行（第一行）
+                let lines: Vec<&str> = csv.lines().collect();
+                if lines.len() > 1 {
+                    for line in &lines[1..] {
+                        if !line.trim().is_empty() {
+                            csv_data.push('\n');
+                            csv_data.push_str(line);
+                            terms_count += 1;
                         }
                     }
                 }
             }
+
             log::info!("Found {} terms for translation", terms_count);
             csv_data
         };

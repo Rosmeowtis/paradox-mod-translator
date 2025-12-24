@@ -298,6 +298,19 @@ impl Glossary {
         }
         found_terms
     }
+
+    /// 合并多个术语表到一个术语表
+    pub fn merge_glossaries(glossaries: &[Glossary]) -> Glossary {
+        let mut merged_entries = HashMap::new();
+        for glossary in glossaries {
+            for (key, item) in &glossary.entries {
+                merged_entries.insert(key.clone(), item.clone());
+            }
+        }
+        Glossary {
+            entries: merged_entries,
+        }
+    }
 }
 
 #[cfg(test)]

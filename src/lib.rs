@@ -47,10 +47,11 @@ pub async fn translate_task(
             glossary_len
         );
     }
-    // TODO 合并多个术语表到同一个Glossary对象中
-
+    // 合并多个术语表到同一个Glossary对象中
+    let merged_glossary = Glossary::merge_glossaries(&glossaries);
+    
     // 2. 创建翻译器
-    let translator = Translator::from_settings(client_settings, glossaries)?;
+    let translator = Translator::from_settings(client_settings, merged_glossary)?;
 
     // 3. 遍历源目录中的文件
     let source_dir = task.source_dir();

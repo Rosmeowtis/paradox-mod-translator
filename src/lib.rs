@@ -16,12 +16,10 @@ pub async fn translate_task(
     task: config::TranslationTask,
     client_settings: config::ClientSettings,
 ) -> Result<()> {
-    use postprocess::{
-        TranslationSlice, generate_target_filename, reconstruct_yaml_file, write_translated_file,
-    };
-    use preprocess::{fix_yaml_content, split_yaml_content, trim_lang_header};
+    use postprocess::{TranslationSlice, reconstruct_yaml_file, write_translated_file};
+    use preprocess::{fix_yaml_content, generate_target_filename, trim_lang_header};
     use std::fs;
-    use translate::{Glossary, Translator};
+    use translate::{Glossary, Translator, split_yaml_content};
     use walkdir::WalkDir;
 
     log::info!("Starting translation task");
@@ -104,27 +102,28 @@ pub async fn translate_task(
             let target_filename =
                 generate_target_filename(filename, &task.source_lang, target_lang);
             let output_path = target_dir.join(&target_filename);
+            
+            // 移除语言头（如果存在）
+            let (original_header, content) = trim_lang_header(&task, content);
 
             // 预处理：修复YAML
-            let fixed_content = fix_yaml_content(&content)?;
-
-            // 移除语言头（如果存在）
-            let (original_header, content_without_header) = trim_lang_header(&task, fixed_content);
-
+            let content = fix_yaml_content(&content)?;
+            
             // 切片（假设最大token数为2000，实际应根据模型调整）
             let max_chunk_size = 2000;
-            let chunks = split_yaml_content(&content_without_header, max_chunk_size)?;
+            let chunks =
+                split_yaml_content(&target_filename, &content, max_chunk_size)?;
 
             log::info!("File split into {} chunks", chunks.len());
 
             // 翻译每个切片
-            let mut translated_slices = Vec::new();
+            let mut translated_chunks = Vec::new();
             for chunk in chunks {
                 let translated_content = translator
-                    .translate_text(&chunk.content, &task.source_lang, target_lang)
+                    .translate_chunk(&chunk, &task.source_lang, target_lang)
                     .await?;
 
-                translated_slices.push(TranslationSlice {
+                translated_chunks.push(TranslationSlice {
                     content: translated_content,
                     start_line: chunk.start_line,
                     end_line: chunk.end_line,
@@ -132,7 +131,7 @@ pub async fn translate_task(
             }
 
             // 后处理：合并切片并重建YAML文件
-            let reconstructed = reconstruct_yaml_file(translated_slices, &original_header)?;
+            let reconstructed = reconstruct_yaml_file(translated_chunks, &original_header)?;
 
             // 写入目标文件
             write_translated_file(&reconstructed, &output_path, true)?;

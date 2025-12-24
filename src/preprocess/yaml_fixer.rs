@@ -52,6 +52,7 @@ pub fn validate_yaml_content(content: &str) -> Result<()> {
 }
 
 /// 移除YAML内容中的语言头(如 l_english:)，并返回原始头和去除头后的内容
+/// 去除头后的内容会去掉所有缩进
 pub fn trim_lang_header(task: &config::TranslationTask, fixed_content: String) -> (String, String) {
     let mut lines: Vec<String> = fixed_content.lines().map(String::from).collect();
     let mut original_header = String::new();
@@ -79,6 +80,11 @@ pub fn trim_lang_header(task: &config::TranslationTask, fixed_content: String) -
         original_header = lines.remove(index);
     }
 
-    let content_without_header = lines.join("\n");
+    // 去除所有缩进
+    let content_without_header = lines
+        .into_iter()
+        .map(|line| line.trim_start().to_string())
+        .collect::<Vec<String>>()
+        .join("\n");
     (original_header, content_without_header)
 }

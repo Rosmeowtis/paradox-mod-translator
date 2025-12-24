@@ -13,10 +13,16 @@ pub struct FileChunk {
     pub start_line: usize,
     /// 在原文件中的结束位置
     pub end_line: usize,
+    /// 目标文件名
+    pub target_filename: String,
 }
 
 /// 将YAML内容分割为多个切片
-pub fn split_yaml_content(content: &str, max_chunk_size: usize) -> Result<Vec<FileChunk>> {
+pub fn split_yaml_content(
+    target_filename: &str,
+    content: &str,
+    max_chunk_size: usize,
+) -> Result<Vec<FileChunk>> {
     let lines: Vec<&str> = content.lines().collect();
     if lines.is_empty() {
         return Ok(vec![]);
@@ -40,6 +46,7 @@ pub fn split_yaml_content(content: &str, max_chunk_size: usize) -> Result<Vec<Fi
                 content: current_chunk_lines.join("\n"),
                 start_line,
                 end_line,
+                target_filename: target_filename.to_string(),
             });
 
             // 开始新切片
@@ -60,6 +67,7 @@ pub fn split_yaml_content(content: &str, max_chunk_size: usize) -> Result<Vec<Fi
             content: current_chunk_lines.join("\n"),
             start_line,
             end_line,
+            target_filename: target_filename.to_string(),
         });
     }
 

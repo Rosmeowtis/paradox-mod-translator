@@ -5,11 +5,13 @@
 mod api;
 mod batcher;
 mod glossary;
+mod splitter;
 mod translator;
 mod validator;
 
 pub use api::*;
 pub use batcher::*;
 pub use glossary::*;
+pub use splitter::*;
 pub use translator::*;
 pub use validator::*;

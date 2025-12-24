@@ -4,6 +4,7 @@
 
 use crate::config::ClientSettings;
 use crate::error::{Result, TranslationError};
+use crate::translate::FileChunk;
 use crate::translate::api::{ApiClient, system_message, user_message};
 use crate::translate::glossary::Glossary;
 use crate::translate::validator::FormatValidator;
@@ -103,13 +104,14 @@ impl Translator {
     }
 
     /// 翻译单个文本片段
-    pub async fn translate_text(
+    pub async fn translate_chunk(
         &self,
-        source_text: &str,
+        chunk: &FileChunk,
         source_lang: &str,
         target_lang: &str,
     ) -> Result<String> {
         // 加载系统提示词
+        let source_text = &chunk.content;
         let system_prompt = self.load_system_prompt(source_lang, target_lang, source_text)?;
 
         // 准备消息
@@ -135,7 +137,11 @@ impl Translator {
             .clone();
 
         // 验证格式
-        self.validator.validate(source_text, &translated_text)?;
+        let checked = self.validator.validate(&source_text, &translated_text);
+
+        for problem in checked {
+            log::warn!("Found issue in {}: {}", &chunk.target_filename, problem);
+        }
 
         Ok(translated_text)
     }
@@ -143,13 +149,15 @@ impl Translator {
     /// 批量翻译文本片段
     pub async fn translate_batch(
         &self,
-        source_texts: Vec<String>,
+        chunks: Vec<FileChunk>,
         source_lang: &str,
         target_lang: &str,
     ) -> Result<Vec<String>> {
         let mut results = Vec::new();
-        for text in source_texts {
-            let translated = self.translate_text(&text, source_lang, target_lang).await?;
+        for chunk in chunks {
+            let translated = self
+                .translate_chunk(&chunk, source_lang, target_lang)
+                .await?;
             results.push(translated);
         }
         Ok(results)

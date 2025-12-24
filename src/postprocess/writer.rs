@@ -4,17 +4,26 @@
 
 use crate::error::Result;
 use std::fs;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 /// 写入翻译后的文件
+/// 因为 Rust str 本身编码为 UTF-8，所以只需要提前写入 BOM 头即可
 pub fn write_translated_file(content: &str, output_path: &Path, create_dirs: bool) -> Result<()> {
     if create_dirs {
         if let Some(parent) = output_path.parent() {
             fs::create_dir_all(parent)?;
         }
     }
-
-    fs::write(output_path, content)?;
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(output_path)?;
+    if !content.starts_with("\u{FEFF}") {
+        file.write("\u{FEFF}".as_bytes())?;
+    }
+    file.write(content.as_bytes())?;
     Ok(())
 }
 

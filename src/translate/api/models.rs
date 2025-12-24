@@ -21,7 +21,7 @@ pub struct ChatCompletionRequest {
     /// 温度参数
     #[serde(skip_serializing_if = "Option::is_none")]
     pub temperature: Option<f32>,
-    /// 最大token数
+    /// 最大输出token数
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_tokens: Option<u32>,
     /// 是否流式响应

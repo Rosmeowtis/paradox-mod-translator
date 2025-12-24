@@ -74,3 +74,22 @@ pub fn split_yaml_content(
     // 如果只有一个切片且未超过限制，直接返回
     Ok(chunks)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    /// 拆分后立刻将其组合，则应与原内容相同
+    #[test]
+    fn test_split_yaml_content() {
+        let content = include_str!("../../tests/localisation/english/l_english_pf_misc.yml");
+        let chunks = split_yaml_content("l_english_pf_misc.yml", content, 500).unwrap();
+        let recombined: String = chunks
+            .iter()
+            .map(|c| c.content.as_str())
+            .collect::<Vec<&str>>()
+            .join("\n");
+        let recombined_lines: Vec<&str> = recombined.lines().collect();
+        let original_lines: Vec<&str> = content.lines().collect();
+        assert_eq!(recombined_lines, original_lines);
+    }
+}

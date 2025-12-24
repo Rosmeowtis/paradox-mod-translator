@@ -12,8 +12,8 @@ temperature = 0.7
 timeout_secs = 600
 # 最大重试次数（默认：3）
 max_retries = 3
-# 最大输出token数（默认：2000）
-max_tokens = 2000
+# 最大输出token数（注释以使用默认值，若要填写数值则需查看模型支持的最大token数）
+# max_tokens = 32K
 # 每次请求的最大文本长度（字符数，用于切片，默认：4000）
 max_chunk_size = 4000
 

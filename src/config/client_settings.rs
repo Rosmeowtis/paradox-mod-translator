@@ -25,7 +25,7 @@ pub struct ClientSettings {
 
     /// 最大输出token数
     #[serde(default = "default_max_tokens")]
-    pub max_tokens: u32,
+    pub max_tokens: Option<u32>,
 
     /// 每次请求的最大文本长度（字符数，用于切片）
     #[serde(default = "default_max_chunk_size")]
@@ -72,8 +72,8 @@ fn default_max_retries() -> u32 {
     3
 }
 
-fn default_max_tokens() -> u32 {
-    2000
+fn default_max_tokens() -> Option<u32> {
+    None
 }
 
 fn default_max_chunk_size() -> usize {

@@ -40,7 +40,7 @@ impl ApiClient {
             model: self.settings.model.clone(),
             messages,
             temperature: Some(self.settings.temperature),
-            max_tokens: Some(self.settings.max_tokens),
+            max_tokens: self.settings.max_tokens,
             stream: Some(self.settings.stream),
         };
 

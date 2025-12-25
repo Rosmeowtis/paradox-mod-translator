@@ -8,6 +8,7 @@ use crate::translate::FileChunk;
 use crate::translate::api::{ApiClient, system_message, user_message};
 use crate::translate::glossary::Glossary;
 use crate::translate::validator::FormatValidator;
+use crate::utils::find_data_file_or_error;
 use std::fs;
 
 /// 翻译器
@@ -41,10 +42,14 @@ impl Translator {
         target_lang: &str,
         source_text: &str,
     ) -> Result<String> {
-        let prompt_path = "data/prompts/translate_system.txt";
-        let mut prompt = fs::read_to_string(prompt_path).map_err(|e| {
+        // 数据目录应按照以下顺序寻找，若不存在再寻找下一个：
+        // 1. 当前目录下的提示词： ./data/
+        // 2. 用户级数据目录下的提示词： ~/.local/share/pmt/data/
+        let prompt_path = find_data_file_or_error("prompts/translate_system.txt")?;
+        let mut prompt = fs::read_to_string(&prompt_path).map_err(|e| {
             TranslationError::Translate(crate::error::TranslateError::ValidationFailed(format!(
-                "Failed to load prompt template: {}",
+                "Failed to load prompt template from {}: {}",
+                prompt_path.display(),
                 e
             )))
         })?;

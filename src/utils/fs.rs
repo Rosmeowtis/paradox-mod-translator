@@ -59,3 +59,77 @@ pub fn get_file_size_chars(path: &Path) -> Result<usize> {
     let content = fs::read_to_string(path)?;
     Ok(content.chars().count())
 }
+
+/// 获取用户数据目录路径
+///
+/// 返回平台特定的用户数据目录：
+/// - Unix/Linux: ~/.local/share/pmt/data/
+/// - Windows: %APPDATA%\pmt\data\
+/// - macOS: ~/.local/share/pmt/data/
+pub fn get_user_data_dir() -> Result<PathBuf> {
+    #[cfg(target_os = "windows")]
+    {
+        let appdata = std::env::var("APPDATA").map_err(|e| {
+            crate::error::TranslationError::Io(std::io::Error::new(
+                std::io::ErrorKind::NotFound,
+                format!("APPDATA environment variable not found: {}", e),
+            ))
+        })?;
+        Ok(PathBuf::from(appdata).join("pmt").join("data"))
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        let home = std::env::var("HOME").map_err(|e| {
+            crate::error::TranslationError::Io(std::io::Error::new(
+                std::io::ErrorKind::NotFound,
+                format!("HOME environment variable not found: {}", e),
+            ))
+        })?;
+        Ok(PathBuf::from(home)
+            .join(".local")
+            .join("share")
+            .join("pmt")
+            .join("data"))
+    }
+}
+
+/// 查找数据文件
+///
+/// 按照以下顺序查找文件：
+/// 1. 当前目录下的数据文件：./data/相对路径
+/// 2. 用户数据目录下的文件：~/.local/share/pmt/data/相对路径 (Unix) 或 %APPDATA%\pmt\data\相对路径 (Windows)
+///
+/// 如果文件存在则返回路径，否则返回None
+pub fn find_data_file(relative_path: &str) -> Result<Option<PathBuf>> {
+    // 1. 尝试当前目录下的data目录
+    let current_dir_path = PathBuf::from("data").join(relative_path);
+    if current_dir_path.exists() {
+        return Ok(Some(current_dir_path));
+    }
+
+    // 2. 尝试用户数据目录
+    let user_data_dir = get_user_data_dir()?;
+    let user_data_path = user_data_dir.join(relative_path);
+    if user_data_path.exists() {
+        return Ok(Some(user_data_path));
+    }
+
+    // 文件不存在
+    Ok(None)
+}
+
+/// 查找数据文件，如果找不到则返回错误
+pub fn find_data_file_or_error(relative_path: &str) -> Result<PathBuf> {
+    find_data_file(relative_path)?.ok_or_else(|| {
+        let user_data_dir =
+            get_user_data_dir().unwrap_or_else(|_| PathBuf::from("[无法获取用户数据目录]"));
+        crate::error::TranslationError::FileNotFound(format!(
+            "Data file not found: '{}'. Searched in:\n1. ./data/{}\n2. {}/{}",
+            relative_path,
+            relative_path,
+            user_data_dir.display(),
+            relative_path
+        ))
+    })
+}

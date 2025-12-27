@@ -5,15 +5,9 @@ fn main() {
     std::fs::create_dir_all("build/localisation").unwrap();
     std::fs::create_dir_all("dist").unwrap();
 
-    // 如果可执行文件还没有编译，先编译它
-    let exe = copy_executable();
-    match exe {
-        Ok(_) => {} // 成功复制可执行文件
-        Err(_e) => {
-            return; // 直接退出 build 脚本，等待下一次构建
-        }
-    }
+    println!("Packaging..., (Need cargo build first)");
 
+    copy_executable().unwrap();
     copy_data_dir();
     copy_doc_dir();
     make_version_file();
@@ -58,20 +52,11 @@ fn copy_data_dir() {
 
 /// 复制 pmt 可执行文件到 build/ 目录
 fn copy_executable() -> std::io::Result<()> {
-    #[cfg(debug_assertions)]
-    {
-        #[cfg(target_os = "windows")]
-        std::fs::copy("target/debug/pmt.exe", "build/pmt.exe")?;
-        #[cfg(not(target_os = "windows"))]
-        std::fs::copy("target/debug/pmt", "build/pmt")?;
-    }
-    #[cfg(not(debug_assertions))]
-    {
-        #[cfg(target_os = "windows")]
-        std::fs::copy("target/release/pmt.exe", "build/pmt.exe")?;
-        #[cfg(not(target_os = "windows"))]
-        std::fs::copy("target/release/pmt", "build/pmt")?;
-    }
+    #[cfg(target_os = "windows")]
+    std::fs::copy("target/release/pmt.exe", "build/pmt.exe")?;
+    #[cfg(not(target_os = "windows"))]
+    std::fs::copy("target/release/pmt", "build/pmt")?;
+
     Ok(())
 }
 
@@ -95,11 +80,10 @@ HomePage: {}
 
 /// 将 build/ 目录中的内容打包成 zip 文件并存入 dist/ 目录
 fn package_build_directory() {
-    std::fs::create_dir_all("dist").unwrap();
     let zip_file_path = format!(
         "dist/pmt-{}-{}.zip",
         env!("CARGO_PKG_VERSION"),
-        std::env::var("TARGET").unwrap_or("unknown".to_string())
+        get_target_triple()
     );
     let file = std::fs::File::create(&zip_file_path).unwrap();
     let mut zip = zip::ZipWriter::new(file);
@@ -122,4 +106,26 @@ fn package_build_directory() {
         }
     }
     zip.finish().unwrap();
+}
+
+fn get_target_triple() -> String {
+    let os = if cfg!(target_os = "windows") {
+        "pc-windows-msvc"
+    } else if cfg!(target_os = "linux") {
+        "unknown-linux-gnu"
+    } else if cfg!(target_os = "macos") {
+        "apple-darwin"
+    } else {
+        "unknown"
+    };
+
+    let arch = if cfg!(target_arch = "x86_64") {
+        "x86_64"
+    } else if cfg!(target_arch = "aarch64") {
+        "aarch64"
+    } else {
+        "unknown"
+    };
+
+    format!("{}-{}", arch, os)
 }

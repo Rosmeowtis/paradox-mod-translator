@@ -41,7 +41,7 @@ jobs:
       - name: Build release binary
         run: cargo build --release --verbose
       - name: Build release with zip archive
-        run: cargo build --release
+        run: cargo run --release --bin package
 
       - name: Verify packaged zip file
         run: ls dist/

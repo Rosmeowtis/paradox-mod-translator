@@ -128,7 +128,7 @@ impl Translator {
         ];
 
         let id = format!(
-            "{}({}->{})",
+            "{}({}:{})",
             chunk.target_filename, chunk.start_line, chunk.end_line
         );
         log::info!(

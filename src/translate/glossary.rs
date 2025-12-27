@@ -319,41 +319,56 @@ pub fn load_glossaries_from_task(
 ) -> Result<crate::translate::Glossary> {
     use crate::translate::Glossary;
     use crate::utils::find_data_file;
-    use std::path::PathBuf;
     let mut glossaries = Vec::new();
     for glossary_name in &task.glossaries {
         // 先尝试 glossary_custom 目录
         let custom_path = format!("glossary_custom/{}.json", glossary_name);
-        let path = if let Some(custom_file) = find_data_file(&custom_path)? {
-            custom_file
-        } else {
-            // 如果自定义术语表不存在，尝试默认术语表
-            let default_path = format!("glossary/{}.json", glossary_name);
-            find_data_file(&default_path)?.ok_or_else(|| {
-                let user_data_dir = crate::utils::get_user_data_dir()
-                    .unwrap_or_else(|_| PathBuf::from("[无法获取用户数据目录]"));
-                crate::error::TranslationError::FileNotFound(format!(
-                    "Glossary file not found: '{}'. Searched in:\n1. ./data/{}\n2. ./data/{}\n3. {}/{}\n4. {}/{}",
+        let default_path = format!("glossary/{}.json", glossary_name);
+
+        let custom = find_data_file(&custom_path)?;
+        let default = find_data_file(&default_path)?;
+
+        match (custom, default) {
+            // 都不存在，则记录警告
+            (None, None) => {
+                log::warn!(
+                    "Glossary file not found for '{}'. Searched in:\n1. ./data/{}\n2. ./data/{}",
                     glossary_name,
                     custom_path,
-                    default_path,
-                    user_data_dir.display(),
-                    custom_path,
-                    user_data_dir.display(),
                     default_path
-                ))
-            })?
-        };
-
-        log::debug!("Loading glossary: {}", path.display());
-        let glossary = Glossary::from_json_file(&path)?;
-        let glossary_len = glossary.len();
-        glossaries.push(glossary);
-        log::info!(
-            "Loaded glossary '{}' with {} entries",
-            glossary_name,
-            glossary_len
-        );
+                );
+            }
+            // 只存在一个，则加载该文件
+            (Some(path), None) | (None, Some(path)) => {
+                let glossary = Glossary::from_json_file(&path)?;
+                let glossary_len = glossary.len();
+                glossaries.push(glossary);
+                log::info!(
+                    "Loaded glossary '{}' with {} entries",
+                    glossary_name,
+                    glossary_len
+                );
+            }
+            // 两个都存在，则先加载默认的，再加载自定义的，后者覆盖前者
+            (Some(c), Some(d)) => {
+                let glossary = Glossary::from_json_file(&d)?;
+                let glossary_len = glossary.len();
+                glossaries.push(glossary);
+                log::info!(
+                    "Loaded glossary '{}' with {} entries",
+                    glossary_name,
+                    glossary_len
+                );
+                let glossary = Glossary::from_json_file(&c)?;
+                let glossary_len = glossary.len();
+                glossaries.push(glossary);
+                log::info!(
+                    "Loaded custom glossary '{}' with {} entries",
+                    glossary_name,
+                    glossary_len
+                );
+            }
+        }
     }
     let merged_glossary = Glossary::merge_glossaries(&glossaries);
     Ok(merged_glossary)

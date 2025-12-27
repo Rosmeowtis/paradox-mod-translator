@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # 例如 v0.1.0
+  workflow_dispatch:  # 手动触发
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: aarch64-apple-darwin
+            os: macos-latest  # GitHub 提供 ARM macOS runner
+
+    env:
+      TARGET: ${{ matrix.target }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          # 不指定 target，使用本机目标进行构建
+          components: rust-src
+
+      - name: Build release binary
+        run: cargo build --release --verbose
+        env:
+          # 设置 TARGET 环境变量供 build.rs 使用
+          TARGET: ${{ matrix.target }}
+
+      - name: Verify packaged zip file
+        run: |
+          echo "Checking dist directory..."
+          if [ -d dist ]; then
+            echo "Listing files in dist:"
+            if [ "${{ runner.os }}" = "Windows" ]; then
+              dir dist
+            else
+              ls -la dist/
+            fi
+          else
+            echo "dist directory not found"
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmt-${{ matrix.target }}
+          path: dist/pmt-*.zip
+          retention-days: 7
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write  # 允许创建/修改 releases
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: pmt-*
+          merge-multiple: true
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Artifacts downloaded:"
+          find artifacts -type f -name '*.zip' | sort | xargs -I {} sh -c 'echo "  {} ($(stat -c%s {}) bytes)"'
+
+      - name: Create Release with Assets
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_RUN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: artifacts/pmt-*.zip

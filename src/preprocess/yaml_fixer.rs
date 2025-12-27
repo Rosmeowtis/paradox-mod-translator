@@ -2,23 +2,30 @@
 //!
 //! 修复Stellaris本地化文件的YAML格式问题。
 
-use crate::{
-    config,
-    error::{Result, TranslationError},
-};
+use crate::error::Result;
 use regex::Regex;
 
 /// 修复YAML内容
 pub fn fix_yaml_content(content: &str) -> Result<String> {
     let fixed = content.to_string();
-    let re_key_zero = Regex::new(r#"(\w+):0\s+"([^"]+)"#).unwrap();
-    let re_unquoted_value = Regex::new(r#"(\w+):\s+([^"\s][^"\n]*)(?:\n|$)"#).unwrap();
+    // 都是单行处理
+    // 处理如 key:0 value 的形式，不假定 value 存在或有完整的引号
+    let re_key_zero = Regex::new(r#"^(\w+):\d+\s+(.*)$"#).unwrap();
+    // 处理 key: value 的形式，value 可能有两个引号，或只有一侧有引号，或没有引号
+    let re_unquoted_value = Regex::new(r#"^(\w+):\s+"?([^"]*)"?$"#).unwrap();
 
     let lines = fixed.lines().into_iter().map(|line| {
+        // 0. 跳过空行和注释行
+        if line.trim().is_empty() {
+            return "".into();
+        }
+        if line.trim_start().starts_with('#') {
+            return line.into();
+        }
         // 1. 修复 `key:0 "value"` 格式
-        let fixed = re_key_zero.replace_all(line, r#"$1: "$2""#);
+        let fixed = re_key_zero.replace(line, r#"$1: $2"#);
         // 2. 确保所有值都有引号
-        let fixed = re_unquoted_value.replace_all(&fixed, r#"$1: "$2""#);
+        let fixed = re_unquoted_value.replace(&fixed, r#"$1: "$2""#);
         // 3. 标准化缩进（2空格）
         let trimmed = fixed.trim_start();
         let indent_level = fixed.len() - trimmed.len();
@@ -30,24 +37,9 @@ pub fn fix_yaml_content(content: &str) -> Result<String> {
     Ok(lines.join("\n"))
 }
 
-/// 验证YAML内容格式
-pub fn validate_yaml_content(content: &str) -> Result<()> {
-    // 简单的验证：检查是否包含有效的键值对
-    if content.trim().is_empty() {
-        return Err(TranslationError::InvalidYaml("Empty content".to_string()));
-    }
-
-    // 检查是否有顶级语言标签
-    if !content.contains("l_") && content.contains(':') {
-        // 可能有效，继续
-    }
-
-    Ok(())
-}
-
 /// 移除YAML内容中的语言头(如 l_english:)，并返回原始头和去除头后的内容
 /// 去除头后的内容会去掉所有缩进
-pub fn trim_lang_header(task: &config::TranslationTask, fixed_content: String) -> (String, String) {
+pub fn trim_lang_header(lang: &str, fixed_content: &str) -> (String, String) {
     let mut lines: Vec<String> = fixed_content.lines().map(String::from).collect();
     let mut original_header = String::new();
 
@@ -62,7 +54,7 @@ pub fn trim_lang_header(task: &config::TranslationTask, fixed_content: String) -
             continue; // 跳过注释行
         }
         // 检查是否是语言头
-        if trimmed.starts_with(&format!("l_{}:", task.source_lang)) {
+        if trimmed.starts_with(&format!("l_{}:", lang)) {
             header_index = Some(i);
             break;
         }

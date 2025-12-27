@@ -83,6 +83,10 @@ impl FormatValidator {
         let original_items: Vec<(&str, &str)> = original
             .lines()
             .filter_map(|line| {
+                // 忽略空行与注释
+                if line.trim().is_empty() || line.trim_start().starts_with('#') {
+                    return None;
+                }
                 let mut parts = line.splitn(2, ':');
                 if let (Some(key), Some(value)) = (parts.next(), parts.next()) {
                     Some((key.trim(), value.trim()))
@@ -95,6 +99,10 @@ impl FormatValidator {
         let translated_items: Vec<(&str, &str)> = translated
             .lines()
             .filter_map(|line| {
+                // 忽略空行与注释
+                if line.trim().is_empty() || line.trim_start().starts_with('#') {
+                    return None;
+                }
                 let mut parts = line.splitn(2, ':');
                 if let (Some(key), Some(value)) = (parts.next(), parts.next()) {
                     Some((key.trim(), value.trim()))

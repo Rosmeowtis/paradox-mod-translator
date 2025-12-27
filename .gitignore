@@ -2,6 +2,7 @@
 /.env
 /data/glossary_custom/*
 !.gitkeep
+*.log
 
 # 测试输出
 /tests/localisation/simp_chinese

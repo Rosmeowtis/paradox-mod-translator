@@ -5,7 +5,9 @@
 mod fs;
 mod regex_patterns;
 mod token_estimator;
+mod logger;
 
 pub use fs::*;
 pub use regex_patterns::*;
 pub use token_estimator::*;
+pub use logger::*;

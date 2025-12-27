@@ -3,11 +3,12 @@
 //! 命令行接口和主工作流程。
 
 use clap::{Parser, Subcommand};
+use ftail::Ftail;
+use log::{LevelFilter, Log};
 use paradox_mod_translator::config::{TranslationTask, load_openai_api_key};
 use paradox_mod_translator::error::{Result, TranslationError};
-use paradox_mod_translator::translate_task;
-use pretty_env_logger;
-use std::path::PathBuf;
+use paradox_mod_translator::{translate_task, validate_translation};
+use std::path::{Path, PathBuf};
 
 /// 命令行参数
 #[derive(Parser)]
@@ -40,7 +41,7 @@ enum Commands {
         #[arg(long)]
         skip_validation: bool,
     },
-    /// 验证配置文件
+    /// 在已经完成翻译的情况下，跳过翻译任务，只检查翻译结果是否符合要求
     Validate {
         /// 任务配置文件路径
         #[arg(value_name = "TASK_FILE")]
@@ -53,8 +54,20 @@ enum Commands {
 /// 主函数
 #[tokio::main]
 async fn main() -> Result<()> {
-    // 初始化日志
-    pretty_env_logger::init();
+    use paradox_mod_translator::utils::ColorfulConsoleLogger;
+    Ftail::new()
+        .single_file(
+            Path::new("paradox-mod-translator.log"),
+            true,
+            LevelFilter::Trace,
+        )
+        // 简约控制台输出
+        .custom(
+            |config| Box::new(ColorfulConsoleLogger { config }) as Box<dyn Log + Send + Sync>,
+            LevelFilter::Info,
+        )
+        .init()
+        .unwrap();
 
     let cli = Cli::parse();
 
@@ -100,15 +113,11 @@ async fn main() -> Result<()> {
             Ok(())
         }
         Commands::Validate { task_file } => {
-            log::info!("Validating configuration file: {:?}", task_file);
+            log::info!("Validating translated task: {:?}", task_file);
 
-            let (client_settings, tasks) = TranslationTask::from_file(&task_file)?;
+            let (_client_settings, tasks) = TranslationTask::from_file(&task_file)?;
 
-            log::info!("Configuration is valid! Found {} task(s)", tasks.len());
-            log::info!("Client settings:");
-            log::info!("  * API base: {}", client_settings.api_base);
-            log::info!("  * Model: {}", client_settings.model);
-            log::info!("  * Temperature: {}", client_settings.temperature);
+            log::info!("Configuration is loaded! Found {} task(s)", tasks.len());
 
             for (i, task) in tasks.iter().enumerate() {
                 log::info!("Task {}:", i + 1);
@@ -116,6 +125,10 @@ async fn main() -> Result<()> {
                 log::info!("  - Target languages: {}", task.target_langs.join(", "));
                 log::info!("  - Glossaries: {}", task.glossaries.join(", "));
                 log::info!("  - Localisation directory: {:?}", task.localisation_dir);
+            }
+
+            for task in tasks {
+                validate_translation(task).await?;
             }
 
             Ok(())

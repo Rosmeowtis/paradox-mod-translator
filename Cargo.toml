@@ -1,6 +1,6 @@
 [package]
 name = "paradox-mod-translator"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Rosmeowtis <rosmeowtis@outlook.com>"]
 description = "AI-powered translator for Paradox game mods"

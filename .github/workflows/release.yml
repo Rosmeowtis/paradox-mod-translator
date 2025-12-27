@@ -43,6 +43,11 @@ jobs:
         env:
           # 设置 TARGET 环境变量供 build.rs 使用
           TARGET: ${{ matrix.target }}
+      - name: Build release with zip archive
+        run: cargo build --release
+        env:
+          # 设置 TARGET 环境变量供 build.rs 使用
+          TARGET: ${{ matrix.target }}
 
       - name: Verify packaged zip file
         run: |

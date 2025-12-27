@@ -4,7 +4,15 @@ fn main() {
     std::fs::create_dir_all("build").unwrap();
     std::fs::create_dir_all("build/localisation").unwrap();
 
-    copy_executable();
+    // 如果可执行文件还没有编译，先编译它
+    let exe = copy_executable();
+    match exe {
+        Ok(_) => {} // 成功复制可执行文件
+        Err(_e) => {
+            return; // 直接退出 build 脚本，等待下一次构建
+        }
+    }
+
     copy_data_dir();
     copy_doc_dir();
     make_version_file();
@@ -48,21 +56,22 @@ fn copy_data_dir() {
 }
 
 /// 复制 pmt 可执行文件到 build/ 目录
-fn copy_executable() {
+fn copy_executable() -> std::io::Result<()> {
     #[cfg(debug_assertions)]
     {
         #[cfg(target_os = "windows")]
-        std::fs::copy("target/debug/pmt.exe", "build/pmt.exe").unwrap();
+        std::fs::copy("target/debug/pmt.exe", "build/pmt.exe")?;
         #[cfg(not(target_os = "windows"))]
-        std::fs::copy("target/debug/pmt", "build/pmt").unwrap();
+        std::fs::copy("target/debug/pmt", "build/pmt")?;
     }
     #[cfg(not(debug_assertions))]
     {
         #[cfg(target_os = "windows")]
-        std::fs::copy("target/release/pmt.exe", "build/pmt.exe").unwrap();
+        std::fs::copy("target/release/pmt.exe", "build/pmt.exe")?;
         #[cfg(not(target_os = "windows"))]
-        std::fs::copy("target/release/pmt", "build/pmt").unwrap();
+        std::fs::copy("target/release/pmt", "build/pmt")?;
     }
+    Ok(())
 }
 
 /// 生成 version.txt 文件

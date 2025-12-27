@@ -77,12 +77,11 @@ jobs:
 
       - name: Create Release with Assets
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTION_RUN }}
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: true
+          token: ${{ secrets.ACTION_RUN }}
           files: artifacts/pmt-*.zip
